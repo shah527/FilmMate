@@ -1,3 +1,3 @@
-# flutter_smart_tripod_ui
+# FilmMate
 
-A new Flutter project.
+Automatic Tripod
