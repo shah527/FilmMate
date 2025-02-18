@@ -8,7 +8,8 @@ class UserRecognitionScreen extends StatefulWidget {
 }
 
 class _UserRecognitionScreenState extends State<UserRecognitionScreen> {
-  String? selectedColor;
+  String? selectedColorName;
+  Color? selectedColorValue;
   bool isRecording = false;
 
   final List<Map<String, dynamic>> neonColors = [
@@ -22,7 +23,7 @@ class _UserRecognitionScreenState extends State<UserRecognitionScreen> {
   ];
 
   void _toggleRecording() {
-    if (selectedColor == null) {
+    if (selectedColorName == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a color before recording.')),
       );
@@ -57,19 +58,47 @@ class _UserRecognitionScreenState extends State<UserRecognitionScreen> {
             ),
           ),
           const SizedBox(height: 30),
-          const Text(
-            'Choose Tracking Color',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+
+          // Display color name when selected, otherwise default text
+          Text(
+            selectedColorName ?? 'Choose Tracking Color',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: selectedColorValue ?? Colors.black,
+              shadows: selectedColorValue != null
+                  ? [
+                      const Shadow(
+                        offset: Offset(-1, -1),
+                        color: Colors.black,
+                      ),
+                      const Shadow(
+                        offset: Offset(1, -1),
+                        color: Colors.black,
+                      ),
+                      const Shadow(
+                        offset: Offset(-1, 1),
+                        color: Colors.black,
+                      ),
+                      const Shadow(
+                        offset: Offset(1, 1),
+                        color: Colors.black,
+                      ),
+                    ]
+                  : [],
+            ),
           ),
+
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: neonColors.map((neon) {
-              final isSelected = selectedColor == neon['name'];
+              final isSelected = selectedColorName == neon['name'];
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedColor = neon['name'];
+                    selectedColorName = neon['name'];
+                    selectedColorValue = neon['color'];
                   });
                 },
                 child: Container(
