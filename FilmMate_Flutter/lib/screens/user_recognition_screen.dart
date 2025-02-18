@@ -13,13 +13,13 @@ class _UserRecognitionScreenState extends State<UserRecognitionScreen> {
   bool isRecording = false;
 
   final List<Map<String, dynamic>> neonColors = [
-    {'name': 'Neon Yellow', 'color': const Color(0xFFCCFF00)},
-    {'name': 'Neon Green', 'color': const Color(0xFF39FF14)},
-    {'name': 'Neon Pink', 'color': const Color(0xFFFF10F0)},
-    {'name': 'Neon Orange', 'color': const Color(0xFFFF5E00)},
-    {'name': 'Neon Red', 'color': const Color(0xFFFF073A)},
-    {'name': 'Neon Purple', 'color': const Color(0xFF9D00FF)},
-    {'name': 'Neon Blue', 'color': const Color(0xFF0FF0FC)},
+    {'name': 'Yellow', 'color': const Color(0xFFCCFF00)},
+    {'name': 'Green', 'color': const Color(0xFF39FF14)},
+    {'name': 'Pink', 'color': const Color(0xFFFF10F0)},
+    {'name': 'Orange', 'color': const Color(0xFFFF5E00)},
+    {'name': 'Red', 'color': const Color(0xFFFF073A)},
+    {'name': 'Purple', 'color': const Color(0xFF9D00FF)},
+    {'name': 'Blue', 'color': const Color(0xFF0FF0FC)},
   ];
 
   void _toggleRecording() {
@@ -43,105 +43,133 @@ class _UserRecognitionScreenState extends State<UserRecognitionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Smart Tripod - User Recognition'),
-        backgroundColor: Colors.blueAccent,
-      ),
+      backgroundColor: Colors.black,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Center(
-            child: Text(
-              '[ CAMERA PREVIEW ]',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-          ),
-          const SizedBox(height: 30),
-
-          // Display color name when selected, otherwise default text
-          Text(
-            selectedColorName ?? 'Choose Tracking Color',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: selectedColorValue ?? Colors.black,
-              shadows: selectedColorValue != null
-                  ? [
-                      const Shadow(
-                        offset: Offset(-1, -1),
-                        color: Colors.black,
-                      ),
-                      const Shadow(
-                        offset: Offset(1, -1),
-                        color: Colors.black,
-                      ),
-                      const Shadow(
-                        offset: Offset(-1, 1),
-                        color: Colors.black,
-                      ),
-                      const Shadow(
-                        offset: Offset(1, 1),
-                        color: Colors.black,
-                      ),
-                    ]
-                  : [],
+          // Camera Preview Placeholder (Flexible Top)
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              color: Colors.grey[300],
+              child: const Center(
+                child: Text(
+                  'Camera View',
+                  style: TextStyle(fontSize: 24, color: Colors.black),
+                ),
+              ),
             ),
           ),
 
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: neonColors.map((neon) {
-              final isSelected = selectedColorName == neon['name'];
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedColorName = neon['name'];
-                    selectedColorValue = neon['color'];
-                  });
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: neon['color'],
-                    boxShadow: [
-                      BoxShadow(
-                        color: neon['color'].withOpacity(0.8),
-                        blurRadius: 10,
-                        spreadRadius: isSelected ? 6 : 2,
+          // Bottom Bar with Buttons + Colors on the same section
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            height: 140, // Make bottom section taller
+            color: Colors.white,
+            child: Column(
+              children: [
+                // Color Name Display (Above the color palette)
+                RichText(
+                  text: TextSpan(
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    children: [
+                      const TextSpan(
+                        text: 'Neon ',
+                        style: TextStyle(color: Colors.black),
                       ),
+                      if (selectedColorName != null)
+                        TextSpan(
+                          text: selectedColorName!,
+                          style: TextStyle(color: selectedColorValue),
+                        )
+                      else
+                        const TextSpan(
+                          text: 'Choose Tracking Color',
+                          style: TextStyle(color: Colors.black),
+                        ),
                     ],
-                    border: isSelected
-                        ? Border.all(color: Colors.black, width: 3)
-                        : null,
                   ),
                 ),
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[600],
+
+                const SizedBox(height: 8),
+
+                // Color Palette + Buttons Row
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Cancel Button
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[600],
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                      ),
+                      child: const Text('CANCEL',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+
+                    // Color Palette Centered
+                    Expanded(
+                      child: Center(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: neonColors.map((neon) {
+                              final isSelected = selectedColorName == neon['name'];
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedColorName = neon['name'];
+                                    selectedColorValue = neon['color'];
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: neon['color'],
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: neon['color'].withOpacity(0.8),
+                                        blurRadius: 10,
+                                        spreadRadius: isSelected ? 6 : 2,
+                                      ),
+                                    ],
+                                    border: isSelected
+                                        ? Border.all(color: Colors.black, width: 3)
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // FAB Button
+                    FloatingActionButton(
+                      onPressed: _toggleRecording,
+                      backgroundColor: isRecording ? Colors.red : Colors.blue,
+                      child: Icon(
+                        isRecording ? Icons.stop : Icons.videocam,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            child: const Text('CANCEL', style: TextStyle(color: Colors.white)),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleRecording,
-        backgroundColor: isRecording ? Colors.red : Colors.blue,
-        child: Icon(
-          isRecording ? Icons.stop : Icons.videocam,
-          color: Colors.white,
-        ),
       ),
     );
   }
